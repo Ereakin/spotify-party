@@ -1,0 +1,24 @@
+<mat-list-item >
+    <p>Vote for the song(s) that you really &hearts;, otherwise suggest them ;)</p>
+</mat-list-item>
+<div *ngIf="isloaded">
+
+    <mat-list>
+        <mat-list-item><span matlistItemTitle class=".mat-body-strong" matLine>Songs / Votes</span></mat-list-item>
+        <mat-list-item *ngFor="let song of this.SongsList; let i =index">
+            <span matlistItemTitle class=".mat-body-strong" matLine>{{song.name}}</span>
+            <span matListItemLine class=".mat-small" matLine>
+                <span *ngFor="let artist of song.artist; index as i">{{song.artist[i]}}<span
+                        *ngIf="i+1!=song.artist.length">, </span>
+                </span>
+            </span>
+            <span class="spacer"></span>
+
+            {{song.votes}}
+
+            <span class="minispacer"></span>
+            <span><button [disabled]="SongsList[i].hasVoted || this.hasVoted" mat-raised-button (click)="disable(i);Vote(song.name, song.artist, song.uri)"> Vote </button></span>
+        </mat-list-item>
+    </mat-list>
+
+</div>

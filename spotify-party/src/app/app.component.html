@@ -1,0 +1,19 @@
+<body class="mat-app-background">
+
+
+<p>
+  <mat-toolbar color="primary">
+    <span>Spotify-Party</span>
+    <span class="spacer"></span>
+    <button type = "button" mat-raised-button [routerLink]="'login'"> Login </button>
+  </mat-toolbar>
+</p>
+
+<nav mat-tab-nav-bar >
+    <a mat-tab-link [routerLink]="''">Playlist</a>
+    <a mat-tab-link [routerLink]="'voting'">Voting</a>
+    <a mat-tab-link [routerLink]="'search'">Suggest a song</a>
+  </nav>
+
+<router-outlet></router-outlet>
+</body>
