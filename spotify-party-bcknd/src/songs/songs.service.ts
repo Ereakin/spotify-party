@@ -47,7 +47,6 @@ export class SongsService {
                 }
               }
             } else {
-              console.log('Nothing played');
               SongsList.push({
                 name: 'No song is played at the moment',
                 artist: [''],

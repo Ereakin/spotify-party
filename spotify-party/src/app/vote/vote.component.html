@@ -5,19 +5,19 @@
 
     <mat-list>
         <mat-list-item><span matlistItemTitle class=".mat-body-strong" matLine>Songs / Votes</span></mat-list-item>
-        <mat-list-item *ngFor="let song of this.SongsList; let i =index">
-            <span matlistItemTitle class=".mat-body-strong" matLine>{{song.name}}</span>
-            <span matListItemLine class=".mat-small" matLine>
+        <mat-list-item *ngFor="let song of this.SongsList; let i = index">
+            <span matlistItemTitle style='font-size:90%;' class=".mat-body-strong" matLine>{{song.name}}</span>
+            <span matListItemLine style='font-size:80%;' class=".mat-small" matLine>
                 <span *ngFor="let artist of song.artist; index as i">{{song.artist[i]}}<span
                         *ngIf="i+1!=song.artist.length">, </span>
                 </span>
             </span>
             <span class="spacer"></span>
 
-            {{song.votes}}
-
+            <span style='font-size:60%;'>{{song.Voters[0]}}</span>
             <span class="minispacer"></span>
-            <span><button [disabled]="SongsList[i].hasVoted || this.hasVoted" mat-raised-button (click)="disable(i);Vote(song.name, song.artist, song.uri)"> Vote </button></span>
+
+            <span><button [disabled]="song.Voters.includes(this.globalService.username)" mat-raised-button (click)="Vote(song.name, song.artist, song.uri)"> {{song.votes}} </button></span>
         </mat-list-item>
     </mat-list>
 

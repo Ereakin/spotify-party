@@ -3,7 +3,7 @@
 body {background-color: #303030;}
 
 .spacer {
-    flex: 15 1 auto;
+    flex: 500 0 10px;
   }
 
   .form {
@@ -12,5 +12,5 @@ body {background-color: #303030;}
     width: 100%;
   }
 .minispacer {
-    flex: 1 1 auto;
+    flex: 1 0 5px;
 }

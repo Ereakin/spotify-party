@@ -1,6 +1,6 @@
 <mat-list-item *ngIf="!hasSearched"><p>Search for your favorite Song/Artist to Add it to the Voting table</p></mat-list-item>
 
-<form class="form"  (submit)="$event.preventDefault()">
+<form class="form" *ngIf="!hasSearched" (submit)="$event.preventDefault()">
 <mat-form-field appearance="fill">
     <mat-label>Search for...</mat-label>
     <input matInput placeholder="z.B. Rattn Tattn" #search>

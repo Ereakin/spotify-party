@@ -1,5 +1,9 @@
+import { GlobalService } from './../global.service';
+import { JwtService } from './../jwt.service';
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { environment } from 'src/environments/environment';
+
 @Component({
     selector: 'app-vote',
     templateUrl: './vote.component.html',
@@ -7,46 +11,71 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class VoteComponent implements OnInit {
     isloaded = false;
-    hasVoted = false;
-    hasVotedfor: string[] = [];
+    private token = localStorage.getItem('token');
     SongsList: {
         name: string;
         artist: string[];
         uri: string;
         votes: number;
-        hasVoted: boolean;
+        Voters: string[];
     }[];
-    constructor(private _snackBar: MatSnackBar) {}
+    constructor(
+        public globalService: GlobalService,
+        private jwtService: JwtService,
+        private _snackBar: MatSnackBar
+    ) {
+        this.getJWT();
+    }
 
     ngOnInit(): void {
         this.GetVotes();
     }
     GetVotes(): void {
         try {
-            fetch('http://localhost:3000' + '/vote', {
-                method: 'Get',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            fetch(
+                'http://' +
+                    environment.BackendAddress +
+                    ':' +
+                    environment.BackendPort +
+                    '/vote',
+                {
+                    method: 'Get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        Authorization: 'Bearer ' + this.token,
+                    },
+                }
+            )
                 .then((response) => response.json())
                 .then((data) => {
                     this.SongsList = data;
                     this.isloaded = true;
-                    console.log(data);
                 });
         } catch (error) {
             console.log(error);
         }
     }
     Vote(name: string, artist: string[], uri: string) {
-        fetch('http://localhost:3000' + '/vote', {
-            method: 'Post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: name, artist: artist, uri: uri }),
-        }).then((response) => {
+        fetch(
+            'http://' +
+                environment.BackendAddress +
+                ':' +
+                environment.BackendPort +
+                '/vote',
+            {
+                method: 'Post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: 'Bearer ' + this.token,
+                },
+                body: JSON.stringify({
+                    name: name,
+                    artist: artist,
+                    uri: uri,
+                    username: this.globalService.username,
+                }),
+            }
+        ).then((response) => {
             this.GetVotes();
         });
     }
@@ -56,18 +85,34 @@ export class VoteComponent implements OnInit {
             duration: 2000,
         });
     }
-    //Fix this: One Button should be disabled longer than the other
-    disable(position) {
-        this.openSnackBar();
-        this.SongsList[position].hasVoted = true;
-        this.hasVoted = true;
-        console.log(this.SongsList[position].hasVoted);
-        setTimeout(() => {
-            this.hasVoted = false;
-        }, 1000);
-        setTimeout(() => {
-            this.SongsList[position].hasVoted = false;
-            console.log(this.SongsList[position].hasVoted);
-        }, 10000);
+
+    getJWT() {
+        if (!localStorage.getItem('token')) {
+            try {
+                fetch(
+                    'http://' +
+                        environment.BackendAddress +
+                        ':' +
+                        environment.BackendPort +
+                        '/auth',
+                    {
+                        method: 'Get',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                )
+                    .then((response) => response.json())
+                    .then((data) => {
+                        localStorage.setItem('token', data.access_token);
+                    });
+            } catch (error) {
+                console.log(error);
+            }
+        } else {
+            let token = localStorage.getItem('token');
+            this.globalService.username =
+                this.jwtService.DecodeToken(token)?.sub;
+        }
     }
 }

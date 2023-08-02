@@ -34,7 +34,6 @@ export class SearchService {
                   const Artists: string[] = [];
                   for (let i = 0; i <= song.artists.length - 1; i++) {
                     Artists.push(song.artists[i].name);
-                    //console.log(Artists);
                   }
 
                   SongsList.push({
@@ -42,11 +41,11 @@ export class SearchService {
                     artist: [...Artists],
                     uri: song.uri,
                   });
-                  //console.log(SongsList);
+
                   resolve(SongsList);
                 }
               } catch (error) {
-                console.log(error);
+                console.error(error);
               }
             }
           });

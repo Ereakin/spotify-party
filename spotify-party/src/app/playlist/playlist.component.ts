@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import FetchWrapper from 'src/Fetch-Wrapper';
+import { environment } from 'src/environments/environment';
 
 @Component({
     selector: 'app-playlist',
@@ -7,24 +8,32 @@ import FetchWrapper from 'src/Fetch-Wrapper';
     styleUrls: ['./playlist.component.scss'],
 })
 export class PlaylistComponent implements OnInit {
-    BackEnd = new FetchWrapper('http://localhost:3000');
+    BackEnd = new FetchWrapper(
+        'http://' + environment.BackendAddress + ':3000'
+    );
     SongsList: { name: string; artist: string[] }[];
     isloaded: boolean = false;
     constructor() {}
 
     ngOnInit() {
         try {
-            fetch('http://localhost:3000' + '/songs', {
-                method: 'Get',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            })
+            fetch(
+                'http://' +
+                    environment.BackendAddress +
+                    ':' +
+                    environment.BackendPort +
+                    '/songs',
+                {
+                    method: 'Get',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                }
+            )
                 .then((response) => response.json())
                 .then((data) => {
                     this.SongsList = data;
                     this.isloaded = true;
-                    console.log(this.SongsList);
                 });
         } catch (error) {
             console.log(error);

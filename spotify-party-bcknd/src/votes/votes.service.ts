@@ -1,13 +1,22 @@
 import { Injectable } from '@nestjs/common';
+import { Cron } from '@nestjs/schedule/dist';
+import QueryString = require('qs');
 
 @Injectable()
 export class VotesService {
-  SongsList: { name: string; artist: string[]; uri: string; votes: number }[] =
-    [];
-  voteSong(name, artist, uri): Promise<string> {
+  SongsList: {
+    name: string;
+    artist: string[];
+    uri: string;
+    votes: number;
+    Voters: string[];
+  }[] = [];
+  voteSong(name, artist, uri, username): Promise<string> {
     return new Promise((resolve, reject) => {
       if (this.SongsList.find((Song) => Song.uri == uri) !== undefined) {
         this.SongsList.find((Song) => Song.uri == uri).votes++;
+        this.SongsList.find((Song) => Song.uri == uri).Voters.push(username);
+
         resolve('this Song is already in the Votes');
       } else {
         try {
@@ -16,8 +25,8 @@ export class VotesService {
             artist: [...artist],
             uri: uri,
             votes: 1,
+            Voters: [username],
           });
-          console.log(this.SongsList);
           resolve(
             'Thanks for your suggestion, you added ' +
               name +
@@ -34,8 +43,37 @@ export class VotesService {
   getVotes(): { name: string; artist: string[]; uri: string; votes: number }[] {
     return this.SongsList;
   }
-
+  @Cron('*/2 * * * *')
   pushSong() {
-    console.log('Push a song to spotify to get it into the queue');
+    let bestsong;
+    if (this.SongsList[0].uri) {
+      bestsong = this.SongsList.reduce((prev, current) => {
+        return prev.votes > current.votes ? prev : current;
+      });
+    }
+    const index = this.SongsList.map((item) => item.uri).indexOf(bestsong.uri);
+    console.log(index);
+    try {
+      fetch(
+        'https://api.spotify.com/v1/me/player/queue?' +
+          QueryString.stringify(
+            {
+              uri: bestsong?.uri,
+            },
+            { encode: false },
+          ),
+        {
+          method: 'post',
+          headers: {
+            Authorization: 'Bearer ' + global.token,
+            'Content-Type': 'application/json',
+          },
+        },
+      );
+    } catch (error) {
+      console.log(error);
+    }
+    this.SongsList.splice(index, 1);
+    console.log(this.SongsList);
   }
 }
