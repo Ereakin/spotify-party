@@ -19,7 +19,7 @@
     "@angular/material": "^16.1.7",
     "@angular/platform-browser": "^14.2.0",
     "@angular/platform-browser-dynamic": "^16.1.8",
-    "@angular/router": "^14.2.0",
+    "@angular/router": "^16.1.8",
     "jwt-decode": "^3.1.2",
     "qs": "^6.11.0",
     "zone.js": "~0.13.1"
