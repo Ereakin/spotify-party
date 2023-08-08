@@ -38,7 +38,7 @@
     "unique-names-generator": "^4.7.1"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
+    "@nestjs/cli": "^10.1.11",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
     "@types/cron": "^2.4.0",
